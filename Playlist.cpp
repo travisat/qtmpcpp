@@ -21,3 +21,12 @@ void Playlist::showSong(QListWidgetItem *song)
 {
     std::cout << "Song: " << song->text().toStdString() << std::endl;
 }
+
+void Playlist::reload(QStringList songs)
+{
+    while (count() > 0) {
+        takeItem(0);
+    }
+
+    addItems(songs);
+}

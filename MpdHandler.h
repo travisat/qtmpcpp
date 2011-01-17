@@ -2,18 +2,20 @@
  *   Copyright (C) 2010 by Travis Thompson                                 *
  *   travisat@gmail.com			                                           *
  ***************************************************************************/
+
 #pragma once
 
-#include <QListWidget>
+#include <mpd/client.h>
+#include <QStringList>
 
-class Playlist: public QListWidget
+class MpdHandler
 {
-    Q_OBJECT
-    public: 
-        Playlist(QWidget *parent = 0);
-        void addSong(QString song);
-        void reload(QStringList songs);
-
-    public slots:
-        void showSong(QListWidgetItem *song);
+    public:
+        MpdHandler(const char* host, unsigned port=6600, unsigned timeout_ms=0);
+        
+        QStringList search(QString query);
+    private:
+        const char *mpdhost;
+        unsigned mpdport;
+        unsigned mpdtimeout_ms;
 };

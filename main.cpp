@@ -5,25 +5,34 @@
 
 #include <QWidget>
 #include <QApplication>
-#include <QHBoxLayout>
+#include <QVBoxLayout>
 #include <QListWidget>
+#include <QPushButton>
+#include <QTextEdit>
 #include <QListWidgetItem>
 #include "Playlist.h"
+#include "MpdHandler.h"
+
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
     Playlist *playlist = new Playlist();
-    playlist->addSong("test 1");
-    playlist->addSong("test 2");
-    playlist->addSong("test 3");
 
-    QHBoxLayout *layout = new QHBoxLayout();
+    MpdHandler *handler = new MpdHandler("127.0.0.1");
+    playlist->addItems(handler->search(argv[1]));
+
+    QVBoxLayout *layout = new QVBoxLayout();
     layout->addWidget(playlist);
 
+    QPushButton *button = new QPushButton("reload");
+    layout->addWidget(button);
+
+    QTextEdit *text = new QTextEdit();
+    layout->addWidget(text);
+
     QWidget w;
-    w.setStyleSheet("* { background-color:rgb(199,147,88); padding 7px; color:rgb(0,0,0)}");
     w.setLayout(layout);
     w.showNormal();
 
