@@ -1,0 +1,8 @@
+qtmpcpp - a search based mpd interface in qt
+Author: Travis Thompson <travisat@gmail.com>
+
+Requirements: libmpdclient-dev, qt4 dev tools
+
+Compiling: just run make
+
+To run: qtmpcpp
