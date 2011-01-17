@@ -5,6 +5,7 @@
 #pragma once
 
 #include <QListWidget>
+#include "MpdHandler.h"
 
 class Playlist: public QListWidget
 {
@@ -16,4 +17,6 @@ class Playlist: public QListWidget
 
     public slots:
         void showSong(QListWidgetItem *song);
+        void play();
+        void play(QListWidgetItem *song);
 };

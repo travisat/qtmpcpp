@@ -9,7 +9,9 @@
 Playlist::Playlist(QWidget *parent)
     :QListWidget(parent)
 {
-    connect(this, SIGNAL(itemDoubleClicked(QListWidgetItem*)), this, SLOT(showSong(QListWidgetItem*)));
+    MpdHandler *handler = new MpdHandler("127.0.0.1");
+    addItems(handler->playlist());
+    delete handler;
 }
 
 void Playlist::addSong(QString song)
@@ -29,4 +31,25 @@ void Playlist::reload(QStringList songs)
     }
 
     addItems(songs);
+
+    MpdHandler *handler = new MpdHandler("127.0.0.1");
+    handler->clear();
+    for (int i=0;i<count();i++) {
+        handler->addSong(item(i)->text());
+    }
+    delete handler;
+}
+
+void Playlist::play()
+{
+    MpdHandler *handler = new MpdHandler("127.0.0.1");
+    handler->play();
+    delete handler;
+}
+
+void Playlist::play(QListWidgetItem *song)
+{
+   MpdHandler *handler = new MpdHandler("127.0.0.1"); 
+   handler->play(row(song));
+   delete handler;
 }

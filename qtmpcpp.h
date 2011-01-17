@@ -5,6 +5,7 @@
 #pragma once
 #include <QWidget>
 #include <QVBoxLayout>
+#include <QHBoxLayout>
 #include <QPushButton>
 #include "Playlist.h"
 #include "MpdHandler.h"
@@ -19,6 +20,8 @@ class qtmpcpp : public QWidget
     private:
         Playlist *playlist;
         QPushButton *searchButton;
+        QPushButton *playButton;
         SearchInput *searchInput;
         QVBoxLayout *layout;
+        QWidget *panel;
 };
