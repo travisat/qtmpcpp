@@ -2,17 +2,18 @@
  *   Copyright (C) 2010 by Travis Thompson                                 *
  *   travisat@gmail.com			                                           *
  ***************************************************************************/
+#pragma once
+#include <QLineEdit>
+#include "MpdHandler.h"
+#include "Playlist.h"
 
-#include <QApplication>
-#include "qtmpcpp.h"
-
-int main(int argc, char *argv[])
+class SearchInput : public QLineEdit
 {
-    QApplication a(argc, argv);
-
-    qtmpcpp window;
-    window.showNormal();
-
-    return a.exec();
-
-}
+    Q_OBJECT
+    public:
+        SearchInput(Playlist *playlist, QWidget *parent = 0);
+    public slots:
+        void search();
+    private:
+        Playlist *list;
+};

@@ -6,6 +6,12 @@ HEADERS += Playlist.h
 SOURCES += MpdHandler.cpp
 HEADERS += MpdHandler.h
 
+SOURCES += SearchInput.cpp
+HEADERS += SearchInput.h
+
+SOURCES += qtmpcpp.cpp
+HEADERS += qtmpcpp.h
+
 TARGET = qtmpcpp 
 
 CONFIG += qt

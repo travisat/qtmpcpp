@@ -2,17 +2,17 @@
  *   Copyright (C) 2010 by Travis Thompson                                 *
  *   travisat@gmail.com			                                           *
  ***************************************************************************/
+#include "SearchInput.h"
 
-#include <QApplication>
-#include "qtmpcpp.h"
-
-int main(int argc, char *argv[])
+SearchInput::SearchInput(Playlist *playlist, QWidget *parent)
+    : QLineEdit(parent)
 {
-    QApplication a(argc, argv);
+    list = playlist;
+}
 
-    qtmpcpp window;
-    window.showNormal();
-
-    return a.exec();
-
+void SearchInput::search()
+{
+    MpdHandler *handler = new MpdHandler("127.0.0.1");
+    list->reload(handler->search(text()));
+    delete handler;
 }
