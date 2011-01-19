@@ -6,12 +6,13 @@
 #include "Playlist.h"
 #include <iostream>
 
-Playlist::Playlist(QWidget *parent)
+Playlist::Playlist(MpdHandler *mpdhandler, QWidget *parent)
     :QListWidget(parent)
 {
-    MpdHandler *handler = new MpdHandler("127.0.0.1");
+    handler = mpdhandler; 
     addItems(handler->playlist());
-    delete handler;
+    int selected = handler->getSelectedIndex();
+    setCurrentRow(selected);
 }
 
 void Playlist::addSong(QString song)
@@ -32,24 +33,18 @@ void Playlist::reload(QStringList songs)
 
     addItems(songs);
 
-    MpdHandler *handler = new MpdHandler("127.0.0.1");
     handler->clear();
     for (int i=0;i<count();i++) {
         handler->addSong(item(i)->text());
     }
-    delete handler;
 }
 
 void Playlist::play()
 {
-    MpdHandler *handler = new MpdHandler("127.0.0.1");
     handler->play();
-    delete handler;
 }
 
 void Playlist::play(QListWidgetItem *song)
 {
-   MpdHandler *handler = new MpdHandler("127.0.0.1"); 
    handler->play(row(song));
-   delete handler;
 }

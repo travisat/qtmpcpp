@@ -3,25 +3,32 @@
  *   travisat@gmail.com			                                           *
  ***************************************************************************/
 #pragma once
-#include <QWidget>
+#include <QMainWindow>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QPushButton>
+#include <QStatusBar>
+#include <QTimer>
 #include "Playlist.h"
 #include "MpdHandler.h"
 #include "SearchInput.h"
+#include "NowPlaying.h"
 
-class qtmpcpp : public QWidget
+class qtmpcpp : public QMainWindow
 {
-    Q_OBJECT
     public:
-        qtmpcpp(QWidget *parent = 0);
+        qtmpcpp(QWidget *parent = 0, Qt::WindowFlags flags = 0);
         ~qtmpcpp();
     private:
         Playlist *playlist;
         QPushButton *searchButton;
         QPushButton *playButton;
         SearchInput *searchInput;
+        NowPlaying *nowPlayingBar;
+        QTimer *timer;
         QVBoxLayout *layout;
+        QWidget *main;
         QWidget *panel;
+        QStatusBar* status;
+        MpdHandler *handler;
 };

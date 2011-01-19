@@ -4,20 +4,31 @@
  ***************************************************************************/
 #include "qtmpcpp.h"
 
-qtmpcpp::qtmpcpp(QWidget *parent)
-    :QWidget(parent)
+qtmpcpp::qtmpcpp(QWidget *parent, Qt::WindowFlags flags)
+    :QMainWindow(parent,flags)
 {
-    playlist = new Playlist();
+    handler = new MpdHandler("127.0.0.1");
+    handler->connect();
+    playlist = new Playlist(handler);
     searchButton = new QPushButton("Search");
     playButton = new QPushButton("Play");
 
-    searchInput = new SearchInput(playlist);
+    searchInput = new SearchInput(playlist,handler);
     searchInput->setFocus();
+
+    status = new QStatusBar();
+    setStatusBar(status);
+
+    nowPlayingBar = new NowPlaying(handler);
+    timer = new QTimer(this);
+    status->addWidget(nowPlayingBar);
 
     connect(searchButton,SIGNAL(clicked()),searchInput,SLOT(search()));
     connect(playButton,SIGNAL(clicked()),playlist,SLOT(play()));
     connect(searchInput,SIGNAL(returnPressed()),searchInput,SLOT(search()));
     connect(playlist,SIGNAL(itemDoubleClicked(QListWidgetItem*)), playlist, SLOT(play(QListWidgetItem*)));
+    connect(timer,SIGNAL(timeout()),nowPlayingBar,SLOT(update()));
+    timer->start(100);
 
     panel = new QWidget();
     QHBoxLayout *playout = new QHBoxLayout();
@@ -30,8 +41,11 @@ qtmpcpp::qtmpcpp(QWidget *parent)
     layout->addWidget(panel);
     layout->addWidget(playlist);
 
-    setLayout(layout);
-
+    main = new QWidget();
+    main->setLayout(layout);
+    
+    
+    setCentralWidget(main);
 }
 
 qtmpcpp::~qtmpcpp()
@@ -39,5 +53,6 @@ qtmpcpp::~qtmpcpp()
     delete playlist;
     delete searchButton;
     delete searchInput;
+    delete handler;
     delete layout;
 }

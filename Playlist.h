@@ -11,7 +11,7 @@ class Playlist: public QListWidget
 {
     Q_OBJECT
     public: 
-        Playlist(QWidget *parent = 0);
+        Playlist(MpdHandler *mpdhandler, QWidget *parent = 0);
         void addSong(QString song);
         void reload(QStringList songs);
 
@@ -19,4 +19,6 @@ class Playlist: public QListWidget
         void showSong(QListWidgetItem *song);
         void play();
         void play(QListWidgetItem *song);
+    private:
+        MpdHandler *handler;
 };

@@ -9,6 +9,9 @@ HEADERS += MpdHandler.h
 SOURCES += SearchInput.cpp
 HEADERS += SearchInput.h
 
+SOURCES += NowPlaying.cpp
+HEADERS += NowPlaying.h
+
 SOURCES += qtmpcpp.cpp
 HEADERS += qtmpcpp.h
 

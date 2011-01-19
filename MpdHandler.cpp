@@ -12,17 +12,41 @@ MpdHandler::MpdHandler(const char* host, unsigned port, unsigned timeout_ms)
     mpdtimeout_ms = timeout_ms;
 }
 
+bool MpdHandler::connect()
+{
+    if (!(conn = mpd_connection_new(mpdhost,mpdport,mpdtimeout_ms))) {
+        return false;
+    }
+    return true;
+}
+
+void MpdHandler::disconnect()
+{
+    mpd_connection_free(conn);
+}
+
+bool MpdHandler::reconnect()
+{
+    disconnect();
+    return connect();
+}
+
+MpdHandler::~MpdHandler()
+{
+    disconnect();
+}
+
 QStringList MpdHandler::search(QString query)
 {
+    reconnect();
+    
     QStringList results;
-    mpd_connection *conn = mpd_connection_new(mpdhost,mpdport,mpdtimeout_ms);
 
     mpd_search_db_songs(conn,0);
     mpd_search_add_any_tag_constraint(conn, MPD_OPERATOR_DEFAULT, (query.toStdString().c_str()));
 
     if (!mpd_search_commit(conn)) {
         results.append("No Results Found");
-        mpd_connection_free(conn);
         return results;
     }
 
@@ -35,53 +59,73 @@ QStringList MpdHandler::search(QString query)
     if (mpd_connection_get_error(conn) != MPD_ERROR_SUCCESS) {
         results.append("Error");
     }
-    mpd_connection_free(conn);
     return results;
 }
 
 QStringList MpdHandler::playlist()
 {
+    reconnect();
+
     QStringList list;
     mpd_song *song;
-    mpd_connection *conn = mpd_connection_new(mpdhost,mpdport,mpdtimeout_ms);
     if (!mpd_send_list_queue_meta(conn))
         return list;
     while ((song = mpd_recv_song(conn)) != NULL ) {
         list.append(mpd_song_get_uri(song));
     }
-    mpd_connection_free(conn);
     return list;
+}
+
+const QString MpdHandler::getCurrentSong()
+{
+    reconnect();
+    mpd_song *song;
+    song = mpd_run_current_song(conn);
+    if (!song) {
+        return QString("No song selected");
+    }
+    return QString(mpd_song_get_uri(song));
 }
 
 void MpdHandler::clear()
 {
-    mpd_connection *conn = mpd_connection_new(mpdhost,mpdport,mpdtimeout_ms);
+    reconnect();
     mpd_run_clear(conn);
-    mpd_connection_free(conn);
 }
 
 void MpdHandler::addSong(QString song)
 {
-    mpd_connection *conn = mpd_connection_new(mpdhost,mpdport,mpdtimeout_ms);
+    reconnect();
     mpd_send_add(conn, song.toStdString().c_str());
-    mpd_connection_free(conn);
 }
 
 void MpdHandler::play()
 {
-    mpd_connection *conn = mpd_connection_new(mpdhost,mpdport,mpdtimeout_ms);
+    //purge conn
+    reconnect();
     mpd_status *status = mpd_run_status(conn);
     if (mpd_status_get_state(status) == MPD_STATE_PLAY) {
         mpd_send_pause(conn,true);
     } else {
         mpd_run_play(conn);
     }
-    mpd_connection_free(conn);
+    mpd_status_free(status);
 }
 
 void MpdHandler::play(int i)
 {
-    mpd_connection *conn = mpd_connection_new(mpdhost,mpdport,mpdtimeout_ms);
+    //purge conn
+    reconnect();
     mpd_run_play_pos(conn, i);
-    mpd_connection_free(conn);
+}
+
+int MpdHandler::getSelectedIndex()
+{
+    //purge conn
+    reconnect();
+
+    mpd_status *status = mpd_run_status(conn);
+    int selected = mpd_status_get_song_pos(status);
+    mpd_status_free(status);
+    return selected;
 }

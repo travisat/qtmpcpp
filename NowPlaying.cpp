@@ -2,16 +2,19 @@
  *   Copyright (C) 2010 by Travis Thompson                                 *
  *   travisat@gmail.com			                                           *
  ***************************************************************************/
-#include "SearchInput.h"
+#include "NowPlaying.h"
 
-SearchInput::SearchInput(Playlist *playlist, MpdHandler *mpdhandler, QWidget *parent)
-    : QLineEdit(parent)
+NowPlaying::NowPlaying(MpdHandler *mpdhandler, QWidget *parent, Qt::WindowFlags f)
+    : QLabel(parent,f)
 {
-    list = playlist;
     handler = mpdhandler;
 }
 
-void SearchInput::search()
+NowPlaying::~NowPlaying()
 {
-    list->reload(handler->search(text()));
+}
+
+void NowPlaying::update()
+{
+    setText(handler->getCurrentSong());
 }

@@ -3,18 +3,18 @@
  *   travisat@gmail.com			                                           *
  ***************************************************************************/
 #pragma once
-#include <QLineEdit>
-#include "MpdHandler.h"
-#include "Playlist.h"
 
-class SearchInput : public QLineEdit
+#include <QLabel>
+#include "MpdHandler.h"
+
+class NowPlaying : public QLabel
 {
     Q_OBJECT
     public:
-        SearchInput(Playlist *playlist, MpdHandler *mpdhandler, QWidget *parent = 0);
+        NowPlaying(MpdHandler *mpdhandler, QWidget *parent=0, Qt::WindowFlags f = 0);
+        ~NowPlaying();
     public slots:
-        void search();
+        void update();
     private:
-        Playlist *list;
         MpdHandler *handler;
 };
